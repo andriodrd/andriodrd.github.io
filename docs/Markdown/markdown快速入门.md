@@ -77,6 +77,7 @@
 //ctrl+t
 ```
 ## 9、标题
+
 ```
 //[toc]
 ```
@@ -103,4 +104,37 @@
 插入链接：ctrl+k
 打开通用设置：ctrl+,
 ```
+## 11、常用插件
+
+```shell
+// 1.增加 Java 代码高亮
+<!--Java代码高亮-->
+<script src="//unpkg.com/prismjs/components/prism-java.js"></script>
+
+// 2.增加全文搜索功能
+ <!--全文搜索,直接用官方提供的无法生效-->
+ <script src="https://cdn.bootcss.com/docsify/4.5.9/plugins/search.min.js">
+ 
+// 3.复制代码到剪切板
+<!-- 复制代码到剪贴板 -->
+<script src="//unpkg.com/docsify-copy-code"></script>
+
+// 4.图片缩放和字数统计
+<!-- 图片缩放 -->
+<script src="//unpkg.com/docsify/lib/plugins/zoom-image.js"></script>
+<!-- 字数统计 -->
+<script src="//unpkg.com/docsify-count/dist/countable.js"></script>
+
+// 5.edit on github
+<script>
+    window.$docsify = {
+      ......
+      plugins: [
+        EditOnGithubPlugin.create('https://github.com/Snailclimb/JavaGuide-Interview/blob/master/')
+      ],
+    }
+</script>
+```
+
+
 
