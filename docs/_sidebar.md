@@ -5,6 +5,7 @@
   - [Git简介](Git/git简介.md)
   - [Git常用命令](Git/git常用命令.md)
 - **Django**
+  - [Django入门](Django/django.md)
 - **常见功能测试点**
   - [常见功能测试点](Test/testcase.md)
 - **Linux**
