@@ -1,16 +1,17 @@
+![](https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603777901692&di=69f373a8c0f27d958f4423175a7bed23&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2F146f6197fc9351ab788837537e2f4eef69b0d416.gif)
 - **Markdown**
   - [Markdown快速入门](Markdown/markdown快速入门.md)
-- **Django**
-- **AotoTestPlatform**
-- **Linux**
-- **Mysql**
-- **Shell**
 - **Git** 
   - [Git简介](Git/git简介.md)
   - [Git常用命令](Git/git常用命令.md)
+- **Django**
+- **常见功能测试点**
+  - [常见功能测试点](Test/testcase.md)
+- **Linux**
+- **Mysql**
+- **Shell**
 - **Web Ui 自动化**
 - **App Ui 自动化**
 - **接口自动化**
-- **常见功能测试点**
-  - [常见功能测试点](Test/testcase.md)
-- **面试**
+- **AotoTestPlatform**
+- **面试** 
