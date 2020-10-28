@@ -188,7 +188,7 @@
 > </html>
 > ```
 
-### 1.9	服务器
+### 1.9	启动服务器
 
 > ```python
 > // 1.启动调试服务器
@@ -202,62 +202,156 @@
 ### 2.1	字段属性
 
 > - Django根据属性的类型确定以下信息：
->   - 当前选择的数据库支持字段的类型
->   - 渲染管理表单时使用的默认html控件
->   - 在管理站点最低限度的验证
->     django会为表创建自动增长的主键列，每个模型只能有一个主键列，如果使用选项设置某属性为主键列后django不会再创建自动增长的主键列。
+>
+>   > - 当前选择的数据库支持字段的类型
+>   > - 渲染管理表单时使用的默认html控件
+>   > - 在管理站点最低限度的验证
+>   >   django会为表创建自动增长的主键列，每个模型只能有一个主键列，如果使用选项设置某属性为主键列后django不会再创建自动增长的主键列。
 >
 > - 默认创建的主键列属性为id，可以使用pk代替，pk全拼为primary key。
 >
-> > 注意：pk是主键的别名，若主键名为id2，那么pk是id2的别名。
-> - 属性命名限制：
->   - 不能是python的保留关键字。
->   - 不允许使用连续的下划线，这是由django的查询方式决定的。
->   - 定义属性时需要指定字段类型，通过字段类型的参数指定选项，语法如下：
+>   > - 注意：pk是主键的别名，若主键名为id2，那么pk是id2的别名。
 >
-> ```shell
-> 属性=models.字段类型(选项)
-> ```
+> - 属性命名限制：
+>
+>   > - 不能是python的保留关键字。
+>   >
+>   > - 不允许使用连续的下划线，这是由django的查询方式决定的。
+>   >
+>   > - 定义属性时需要指定字段类型，通过字段类型的参数指定选项，语法如下：
+>   >
+>   >   ```
+>   >   属性=models.字段类型(选项)
+>   >   ```
+>
 
 ### 2.2	字段类型
 
 > - 使用时需要引入django.db.models包，字段类型如下：
 >
->   - AutoField：自动增长的IntegerField，通常不用指定，不指定时Django会自动创建属性名为id的自动增长属性。
->   - BooleanField：布尔字段，值为True或False。
->   - NullBooleanField：支持Null、True、False三种值。
->   - CharField(max_length=字符长度)：字符串。
->     - 参数max_length表示最大字符个数。
->
->   - TextField：大文本字段，一般超过4000个字符时使用。
->   - IntegerField：整数。
->   - DecimalField(max_digits=None, decimal_places=None)：十进制浮点数。
->     - 参数max_digits表示总位数。
->     - 参数decimal_places表示小数位数。
->
->   - FloatField：浮点数。
->   - DateField[auto_now=False, auto_now_add=False])：日期。
->     - 参数auto_now表示每次保存对象时，自动设置该字段为当前时间，用于"最后一次修改"的时间戳，它总是使用当前日期，默认为false。
->     - 参数auto_now_add表示当对象第一次被创建时自动设置当前时间，用于创建的时间戳，它总是使用当前日期，默认为false。
->     - 参数auto_now_add和auto_now是相互排斥的，组合将会发生错误。
->
->   - TimeField：时间，参数同DateField。
->   - DateTimeField：日期时间，参数同DateField。
->   - FileField：上传文件字段。
->   - ImageField：继承于FileField，对上传的内容进行校验，确保是有效的图片。
+>   > - AutoField：自动增长的IntegerField，通常不用指定，不指定时Django会自动创建属性名为id的自动增长属性。
+>   > - BooleanField：布尔字段，值为True或False。
+>   > - NullBooleanField：支持Null、True、False三种值。
+>   > - CharField(max_length=字符长度)：字符串。
+>   >   - 参数max_length表示最大字符个数。
+>   >
+>   > - TextField：大文本字段，一般超过4000个字符时使用。
+>   > - IntegerField：整数。
+>   > - DecimalField(max_digits=None, decimal_places=None)：十进制浮点数。
+>   >   - 参数max_digits表示总位数。
+>   >   - 参数decimal_places表示小数位数。
+>   >
+>   > - FloatField：浮点数。
+>   > - DateField[auto_now=False, auto_now_add=False])：日期。
+>   >   - 参数auto_now表示每次保存对象时，自动设置该字段为当前时间，用于"最后一次修改"的时间戳，它总是使用当前日期，默认为false。
+>   >   - 参数auto_now_add表示当对象第一次被创建时自动设置当前时间，用于创建的时间戳，它总是使用当前日期，默认为false。
+>   >   - 参数auto_now_add和auto_now是相互排斥的，组合将会发生错误。
+>   >
+>   > - TimeField：时间，参数同DateField。
+>   > - DateTimeField：日期时间，参数同DateField。
+>   > - FileField：上传文件字段。
+>   > - ImageField：继承于FileField，对上传的内容进行校验，确保是有效的图片。
 
 ### 2.3	字段选项
 
 > - 通过选项实现对字段的约束，选项如下：
->   - null：如果为True，表示数据库字段允许为空，默认值是False。
->   - blank：如果为True，则后台管理该字段允许为空白，默认值是False。
->     - 对比：null是数据库范畴的概念，blank是表单验证范畴的**。
->   - db_column：字段的名称，如果未指定，则使用属性的名称存入到数据库中。
->   - db_index：若值为True, 则在数据库表中会为此字段创建索引，默认值是False。
->   - default：设置字段属性类型的默认值
->   - primary_key：若为True，则该字段会成为模型的主键字段，默认值是False，一般作为AutoField的选项使用。
->   - unique：如果为True, 这个字段在数据库表中必须有唯一值，默认值是False。
+>
+>   > - null：如果为True，表示数据库字段允许为空，默认值是False。
+>   > - blank：如果为True，则后台管理该字段允许为空白，默认值是False。
+>   >   - 对比：null是数据库范畴的概念，blank是表单验证范畴的**。
+>   > - db_column：字段的名称，如果未指定，则使用属性的名称存入到数据库中。
+>   > - db_index：若值为True, 则在数据库表中会为此字段创建索引，默认值是False。
+>   > - default：设置字段属性类型的默认值
+>   > - primary_key：若为True，则该字段会成为模型的主键字段，默认值是False，一般作为AutoField的选项使用。
+>   > - unique：如果为True, 这个字段在数据库表中必须有唯一值，默认值是False。
 
 ### 2.4	字段查询
 
-> 
+> - 通过模型类.objects属性可以调整如下函数，实现对模型类对应的数据表的查询。
+>
+>   > | 函数名     | 功能                                   | 返回值                 | 说明                                                         |
+>   > | ---------- | -------------------------------------- | ---------------------- | ------------------------------------------------------------ |
+>   > | get()      | 返回表中满足条件的一条且只能有一条数据 | 返回值是一个模型类对象 | 参数中写查询条件。<br />1. 如果查到多条数据，则抛出异常miltipleobjectsreturned<br />2.查询不到数据，则抛出doesnotexist |
+>   > | all()      | 返回模型对应表格中的所有数据           | 返回值是queryset类型   | 查询集                                                       |
+>   > | filter()   | 返回不满足条件的数据                   | 返回值是queryset类型   | 参数写查询条件                                               |
+>   > | exclude()  | 返回不满足条件的数据                   | 返回值是queryset类型   | 参数写查询条件                                               |
+>   > | order_by() | 对查询结果进行排序                     | 返回值是queryset类型   | 参数中写根据那些字段进行排序                                 |
+>
+> - 条件查询：语法  属性名称__比较运算符=值
+>
+>   > - 查询等：exact
+>   > - 模糊查询：contains
+>   > - 以指定值开头或结尾：startswith、endswith
+>   > - 空查询：isnull
+>   > - 范围查询：in [] 接的是列表
+>   > - 比较查询：gt、gte、lt、lte：大于、大于等于、小于、小于等于
+>   > - 日期查询：year、month、day、week_day、hour、minute、second：对日期时间类型的属性进行运算
+>
+> - F对象：F(属性名)-用于对属性的比较
+>
+>   ```python
+>   from django.db.models import F
+>   ...
+>   list = BookInfo.objects.filter(bread__gte=F('bcomment'))
+>   ```
+>   
+> - Q对象：Q(属性名__运算符=值)，使用&、|、~表示。
+>
+>   ```python
+>   list = BookInfo.objects.filter(Q(bread__gt=20) | Q(pk__lt=3))
+>   
+>   //Q对象前可以使用~操作符，表示非not。
+>   
+>   //例：查询编号不等于3的图书。
+>   
+>   list = BookInfo.objects.filter(~Q(pk=3))
+>   ```
+>   
+> - 聚合函数：aggregate(Avg，Count，Max，Min，Sum)过滤器调用聚合函数
+>
+>   ```python
+>   //注意aggregate的返回值是一个字典类型，格式如下：
+>   
+>   // {'聚合类小写__属性名':值}
+>   // 如:{'sum__bread':3}
+>       
+>   //例：查询图书的总阅读量。
+>   
+>   from django.db.models import Sum
+>   ...
+>   list = BookInfo.objects.aggregate(Sum('bread'))
+>   
+>   //使用count时一般不使用aggregate()过滤器。
+>   
+>   //例：查询图书总数。
+>   
+>   list = BookInfo.objects.count()
+>   //注意count函数的返回值是一个数字。
+>   ```
+>
+> - 总结
+>
+>   > 1. get：返回一条且只有一条数据，返回值是一个对象，参数可以写查询条件。
+>   >
+>   > 2. all：返回模型对应表的所有数据，返回值是queryset
+>   >
+>   > 3. filter：返回满足条件的数据，返回值是queryset，参数可以写查询条件
+>   >
+>   > 4. exclude：返回不满足条件的数据，返回值是queryset，参数可以写查询条件
+>   >
+>   > 5. order_by：对查询结果进行排序，返回值是queryset，参数可以写查询条件
+>   >
+>   > 6. 导入的包 from django.db.models import F,Q,Sum,Count,Avg,Max,Min
+>   >
+>   > 7. F对象：用于类属性之间的比较。
+>   >
+>   > 8. Q对象：用于条件之间的逻辑关系。
+>   >
+>   > 9. aggregate：进行聚合操作，返回值是一个字典，进行聚合的时候需要先导入聚合类。
+>   >
+>   > 10. count：返回结果集中数据的数目，返回值是一个数字。
+>   >
+>   > > 备注：
+>   > >
+>   > > - 对一个queryset实例对象，可以继续调用上面的所有函数。
+
