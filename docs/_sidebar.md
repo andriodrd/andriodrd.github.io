@@ -11,6 +11,7 @@
 - **Linux**
 - **Mysql**
 - **Shell**
+- **Docker**
 - **Web Ui 自动化**
 - **App Ui 自动化**
 - **接口自动化**
