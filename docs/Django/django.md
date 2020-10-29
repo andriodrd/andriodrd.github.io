@@ -451,4 +451,116 @@
 >   >    > aParent=models.ForeignKey('self',null=True,blank=True)
 >   >    > ```
 >   >
->   > 6. 
+>
+> - 管理器models.Manager
+>
+>   > 1. objects与models.Manager
+>   >
+>   >    > ```python
+>   >    > // 1.属性objects：管理器，是models.Manager类型的对象，用于与数据库进行交互
+>   >    > 
+>   >    > // 2.当没有为模型类定义管理器时，Django会为每一个模型类生成一个名为objects的管理器，自定义管理器后，Django不再生成默认管理器objects
+>   >    > 
+>   >    > // 3.自定义管理器类主要用于两种情况：1).修改原始查询集，重写all()方法2)向管理器类中添加额外的方法，如向数据库中插入数据
+>   >    > 
+>   >    > // 修改原始查询集，重写all()方法
+>   >    > class BookInfoManager(models.Manager):
+>   >    >     def all(self):
+>   >    >         #默认查询未删除的图书信息
+>   >    >         #调用父类的成员语法为：super().方法名
+>   >    >         return super().all().filter(isDelete=False)
+>   >    >       
+>   >    > class BookInfo(models.Model):
+>   >    >     ...
+>   >    >     objects = BookInfoManager()
+>   >    >     
+>   >    > book=BookInfo.objects.all()
+>   >    >       
+>   >    > // 向管理器类中添加额外的方法，如向数据库中插入数据
+>   >    > class BookInfoManager(models.Manager):
+>   >    >     ...
+>   >    >     #创建模型类，接收参数为属性赋值
+>   >    >     def create_book(self, title, pub_date):
+>   >    >         #创建模型类对象self.model可以获得模型类
+>   >    >         book = self.model()
+>   >    >         book.btitle = title
+>   >    >         book.bpub_date = pub_date
+>   >    >         book.bread=0
+>   >    >         book.bcommet=0
+>   >    >         book.isDelete = False
+>   >    >         # 将数据插入进数据表
+>   >    >         book.save()
+>   >    >         return book
+>   >    >  
+>   >    > class BookInfo(models.Model):
+>   >    >     ...
+>   >    >     objects = BookInfoManager()
+>   >    >     
+>   >    > book=BookInfo.objects.create_book("abc",date(1980,1,1))
+>   >    > ```
+>   >
+>   > 2. 总结
+>   >
+>   >    > ![image-20201029212337445](assets/image-20201029212337445.png)
+>   
+> - 元选项
+>
+>   >  ```python
+>   > // 1.在模型类中定义类Meta，用于设置元信息，如使用db_table自定义表的名字。数据表的默认名称为：<app_name>_<model_name>例：booktest_bookinfo
+>   > 
+>   > // 2.例：指定BookInfo模型类生成的数据表名为bookinfo。
+>   > #定义图书模型类BookInfo
+>   > class BookInfo(models.Model):
+>   >     ...
+>   > 
+>   >     #定义元选项
+>   >     class Meta:
+>   >       db_table='bookinfo' #指定BookInfo生成的数据表名为bookinfo
+>   >  ```
+
+## 3、视图
+
+### 3.1	视图
+
+> 1. 视图的功能
+>
+>    > - 接受请求，进行处理，与M和T进行交互，返回应答。
+>    > - 返回html内容HttpResponse，也可能重定向redirect，还可能使JsonResponse
+>    > - 用户通过在浏览器的地址栏中输入网址请求网站，对于Django开发的网站，由哪一个视图进行处理请求，是由url匹配找到的。
+>
+> 2. url获取值
+>
+>    > - 位置参数
+>    >
+>    >   ```python
+>    >   // 1.直接使用小括号，通过位置参数传递给视图。
+>    >   url(r'^delete(\d+)/$',views.show_arg),
+>    >   
+>    >   // 2.修改视图show_arg
+>    >   def show_arg(request,id):
+>    >       return HttpResponse('show arg %s'%id)
+>    >   ```
+>    >
+>    > - 关键字参数
+>    >
+>    >   ```python
+>    >   // 1.修改正则表达式如下，其中?P部分表示为这个参数定义的名称为id，可以是其它名称，起名做到见名知意。
+>    >   url(r'^delete(?P<id>\d+)/$',views.show_arg),
+>    >   
+>    >   // 2.修改视图show_arg，注意：视图show_arg此时必须要有一个参数名为id1，否则报错。
+>    >   def show_arg(request,id1):
+>    >       return HttpResponse('show %s'%id1)
+>    >   ```
+>
+> 3. 内置错误视图
+>
+>    > - Django内置处理HTTP错误的视图，主要错误及视图包括：
+>    >   - 404错误：page not found视图
+>    >   - 500错误：server error视图
+>    >
+>    > - 如果想看到错误视图而不是调试信息，需要修改test3/setting.py文件的DEBUG项。
+>    >
+>    >   ```python
+>    >   DEBUG = False
+>    >   ALLOWED_HOSTS = ['*', ]
+>    >   ```
