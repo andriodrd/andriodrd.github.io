@@ -564,3 +564,671 @@
 >    >   DEBUG = False
 >    >   ALLOWED_HOSTS = ['*', ]
 >    >   ```
+
+## 4、模板
+
+## 5、HttpReqeust对象
+
+### 5.1	定义
+
+> - 服务器接收到http协议的请求后，会根据报文创建HttpRequest对象，这个对象不需要我们创建，直接使用服务器构造好的对象就可以。视图的第一个参数必须是HttpRequest对象，在django.http模块中定义了HttpRequest对象的API。
+
+### 5.2	属性
+
+> - path：一个字符串，表示请求的页面的完整路径，不包含域名和参数部分。
+>
+>   ```python
+>   // 1.打开booktest/views.py文件，代码如下：
+>   
+>   def index(request):
+>       str='%s'%(request.path)
+>       return render(request, 'booktest/index.html', {'str':str})
+>   ```
+>
+> - method：一个字符串，表示请求使用的HTTP方法，常用值包括：'GET'、'POST'。
+>
+>   > - 在浏览器中给出地址发出请求采用get方式，如超链接。
+>   > - 在浏览器中点击表单的提交按钮发起请求，如果表单的method设置为post则为post请求。
+>
+> - encoding：一个字符串，表示提交的数据的编码方式。
+>
+>   > - 如果为None则表示使用浏览器的默认设置，一般为utf-8。
+>   >
+>   > - 这个属性是可写的，可以通过修改它来修改访问表单数据使用的编码，接下来对属性的任何访问将使用新的encoding值。
+>   >
+>   >   > ```python
+>   >   > // 1.打开booktest/views.py文件，代码如下：
+>   >   > 
+>   >   > def index(request):
+>   >   >     str='%s'%(request.encoding)
+>   >   >     return render(request, 'booktest/index.html', {'str':str})
+>   >   > ```
+>
+> - GET：QueryDict类型对象，类似于字典，包含get请求方式的所有参数。
+>
+>   > ```python
+>   > <a href="/show_reqarg/?a=1&b=2&c=python">get方式提交数据</a><br/>
+>   > ```
+>
+> - POST：QueryDict类型对象，类似于字典，包含post请求方式的所有参数。
+>
+>   > 1）使用form表单请求时，method方式为post则会发起post方式的请求，需要使用HttpRequest对象的POST属性接收参数，POST属性是一个QueryDict类型的对象。
+>   >
+>   > ​		问：表单form如何提交参数呢？
+>   >
+>   > ​		答：表单控件name属性的值作为键，value属性的值为值，构成键值对提交。
+>   >
+>   > > - 如果表单控件没有name属性则不提交。
+>   > >
+>   > > - 对于checkbox控件，name属性的值相同为一组，被选中的项会被提交，出现一键多值的情况。
+>   > >
+>   > > - 键是表单控件name属性的值，是由开发人员编写的。
+>   > >
+>   > > - 值是用户填写或选择的。
+>   > >
+>   > >   ```python
+>   > >   // 1.post提交方式示例
+>   > >   <form method="post" action="/show_reqarg/">
+>   > >       姓名：<input type="text" name="uname"><br/>
+>   > >       性别：男<input type="radio" name="gender" value="男"/>
+>   > >       女<input type="radio" name="gender" value="女"/><br/>
+>   > >       爱好：
+>   > >       吃饭<input type="checkbox" name="hobby" value="吃饭"/>
+>   > >       睡觉<input type="checkbox" name="hobby" value="睡觉"/>
+>   > >       打豆豆<input type="checkbox" name="hobby" value="打豆豆"/><br>
+>   > >       <input type="submit" value="提交">
+>   > >   </form>
+>   > >   ```
+>
+> - FILES：一个类似于字典的对象，包含所有的上传文件。
+>
+> - COOKIES：一个标准的Python字典，包含所有的cookie，键和值都为字符串。
+>
+> - session：一个既可读又可写的类似于字典的对象，表示当前的会话，只有当Django 启用会话的支持时才可用，详细内容见"状态保持"。
+
+### 5.3	QueryDict对象
+
+> - 定义在django.http.QueryDict
+>
+> - HttpRequest对象的属性GET、POST都是QueryDict类型的对象
+>
+> - 与python字典不同，QueryDict类型的对象用来处理同一个键带有多个值的情况
+>
+> - 方法get()：根据键获取值，键和值都是字符串类型
+>
+> - 如果一个键同时拥有多个值将获取最后一个值
+>
+> - 如果键不存在则返回None值，可以设置默认值进行后续处理
+>
+>   > ````python
+>   > dict.get('键',默认值)
+>   > 可简写为
+>   > dict['键']
+>   > ````
+>
+> - 方法getlist()：根据键获取值，值以列表返回，可以获取指定键的所有值
+>
+> - 如果键不存在则返回空列表[]，可以设置默认值进行后续处理
+>
+>   > ```python
+>   > dict.getlist('键',默认值)
+>   > ```
+>
+
+## 6、HttpResponse对象
+
+### 6.1	定义
+
+> - 视图在接收请求并处理后，必须返回HttpResponse对象或子对象。在django.http模块中定义了HttpResponse对象的API。HttpRequest对象由Django创建，HttpResponse对象由开发人员创建。
+
+### 6.2	属性
+
+> - content：表示返回的内容。
+> - charset：表示response采用的编码字符集，默认为utf-8。
+> - status_code：返回的HTTP响应状态码。
+> - content-type：指定返回数据的的MIME类型，默认为'text/html'。
+
+### 6.3	方法
+
+> - _init_：创建HttpResponse对象后完成返回内容的初始化。
+>
+> - set_cookie：设置Cookie信息。
+>
+>   > ```python
+>   > set_cookie(key, value='', max_age=None, expires=None)
+>   > ```
+>
+> - cookie是网站以键值对格式存储在浏览器中的一段纯文本信息，用于实现用户跟踪。
+>
+>   > - max_age是一个整数，表示在指定秒数后过期。
+>   > - expires是一个datetime或timedelta对象，会话将在这个指定的日期/时间过期。
+>   > - max_age与expires二选一。
+>   > - 如果不指定过期时间，在关闭浏览器时cookie会过期。
+>
+> - delete_cookie(key)：删除指定的key的Cookie，如果key不存在则什么也不发生。
+>
+> - write：向响应体中写数据。
+>
+> - 调用模板简写函数render
+>
+>   每次调用模板时都要执行加载、上下文、渲染三个步骤，为了简化操作，Django定义了render()函数封装了以上三个步骤的代码，定义在django.shortcuts模块中。
+>
+>   1）打开booktest/views.py文件，定义视图index3如下：
+>
+>   > ```python
+>   > from django.shortcuts import render
+>   > ...
+>   > def index3(request):
+>   >     return render(request, 'booktest/index3.html', {'h1': 'hello'})
+>   > ```
+
+### 6.4	子类JsonResponse
+
+> - 在浏览器中使用javascript发起ajax请求时，返回json格式的数据，此处以jquery的get()方法为例。类JsonResponse继承自HttpResponse对象，被定义在django.http模块中，创建对象时接收字典作为参数。
+>
+>   > - JsonResponse对象的content-type为'application/json'
+
+### 6.5	子类HttpResponseRedirect
+
+> - 当一个逻辑处理完成后，不需要向客户端呈现数据，而是转回到其它页面，如添加成功、修改成功、删除成功后显示数据列表，而数据的列表视图已经开发完成，此时不需要重新编写列表的代码，而是转到这个视图就可以，此时就需要模拟一个用户请求的效果，从一个视图转到另外一个视图，就称为重定向。
+>
+>   > Django中提供了HttpResponseRedirect对象实现重定向功能，这个类继承自HttpResponse，被定义在django.http模块中，返回的状态码为302。
+>
+> - 在django.shortcuts模块中为重定向类提供了简写函数redirect。
+>
+>   ```python
+>   from django.shortcuts import redirect
+>   ...
+>   def red1(request):
+>       return redirect('/')
+>   ```
+
+## 7.	Cookie和Session
+
+### 7.1	Cookie
+
+> 1. 典型应用：记住用户名，网站的广告推送。
+>
+> 2. 设置Cookie
+>
+>    > ```python
+>    > // 1.set_cookie前需要获得一个response对象
+>    > response.set_cookie('h1', '你好')读取Cookie
+>    > ```
+>    
+> 3. 读取Cookie
+>
+>    > ```python
+>    > request.COOKIES['h1']
+>    > ```
+>
+> 4. 方法
+>
+>    > ```python
+>    > set_cookie(key, value='', max_age=None, expires=None)
+>    > ```
+
+### 7.2	Session
+
+> 1. 对于敏感、重要的信息，建议要储在服务器端，不能存储在浏览器中，如用户名、余额、等级、验证码等信息。
+>
+>    > 在服务器端进行状态保持的方案就是Session。
+>
+> 2.  启用Session
+>
+>     > 1.Django项目默认启用Session。
+>     >
+>     > 2.打开test3/settings.py文件，在项MIDDLEWARE_CLASSES中启用Session中间件。
+>
+> 3. 存储方式
+>
+>    > 打开test3/settings.py文件，设置SESSION_ENGINE项指定Session数据存储的方式，可以存储在数据库、缓存、Redis等。
+>    >
+>    > 1）存储在数据库中，如下设置可以写，也可以不写，这是默认存储方式。
+>    >
+>    > ```python
+>    > SESSION_ENGINE='django.contrib.sessions.backends.db'
+>    > ```
+>    >
+>    > 2）存储在缓存中：存储在本机内存中，如果丢失则不能找回，比数据库的方式读写更快。
+>    >
+>    > ```python
+>    > SESSION_ENGINE='django.contrib.sessions.backends.cache'
+>    > ```
+>    >
+>    > 3）混合存储：优先从本机内存中存取，如果没有则从数据库中存取。
+>    >
+>    > ```python
+>    > SESSION_ENGINE='django.contrib.sessions.backends.cached_db'
+>    > ```
+>    >
+>    > 4）Redis存储：pip install django-redis-sessions==0.5.6，修改test3/settings文件，增加如下项：
+>    >
+>    > ```python
+>    > SESSION_ENGINE = 'redis_sessions.session'SESSION_ENGINE = 'redis_sessions.session'
+>    > SESSION_REDIS_HOST = 'localhost'
+>    > SESSION_REDIS_PORT = 6379
+>    > SESSION_REDIS_DB = 2
+>    > SESSION_REDIS_PASSWORD = ''
+>    > SESSION_REDIS_PREFIX = 'session'
+>    > ```
+>    >
+>    > 
+>    >
+>    > 5）如果存储在数据库中，需要在项INSTALLED_APPS中安装Session应用。
+>    >
+>    > ```python
+>    > INSTALLED_APPS = [
+>    >  'django.contrib.admin',
+>    >  'django.contrib.auth',
+>    >  'django.contrib.contenttypes',
+>    >  'django.contrib.sessions',
+>    >  # 注销掉则自动登录会失效 服务器第一次响应浏览器请求时，会生成一个sessionid，返回给浏览器，浏览器再次请求时，会带上cookie中的sessionid,服务器通过查询sessionid，在 数据库中查询是哪个用户，取出信息，返回给浏览器，django就是通过cookie和session机制完成了自动登录
+>    >  'django.contrib.messages',
+>    >  'django.contrib.staticfiles',
+>    >  'apitest',
+>    > ]
+>    > ```
+>
+> 4. 依赖于Cookie
+>
+>    >1）所有请求者的Session都会存储在服务器中，服务器如何区分请求者和Session数据的对应关系呢？
+>    >
+>    >>  答：在使用Session后，会在Cookie中存储一个sessionid的数据，每次请求时浏览器都会将这个数据发给服务器，服务器在接收到sessionid后，会根据这个值找出这个请求者的Session。
+>    >>
+>    >> >  结果：如果想使用Session，浏览器必须支持Cookie，否则就无法使用Session了。
+>    >
+>    >2）存储Sesion时，键与Cookie中的sessionid相同，值是开发人员设置的键值对信息，进行了base64编码，过期时间由开发人员设置。
+>
+> 5. 对象及方法
+>
+>    > 通过HttpRequest对象的session属性进行会话的读写操作。
+>    >
+>    > 1） 以键值对的格式写session。
+>    >
+>    > ```python
+>    > request.session['键']=值
+>    > //解码session_data网址：https://tool.oschina.net/encrypt?type=3
+>    > ```
+>    >
+>    > > ![image-20201030131502292](assets/image-20201030131502292.png)
+>    >
+>    > 2）根据键读取值。
+>    >
+>    > ```python
+>    > request.session.get('键',默认值)
+>    > ```
+>    >
+>    > 3）清除所有session，在存储中删除值部分。
+>    >
+>    > ```python
+>    > request.session.clear()
+>    > ```
+>    >
+>    > 4）清除session数据，在存储中删除session的整条数据。
+>    >
+>    > ```python
+>    > request.session.flush()
+>    > ```
+>    >
+>    > 5）删除session中的指定键及值，在存储中只删除某个键及对应的值。
+>    >
+>    > ```python
+>    > del request.session['键']
+>    > ```
+>    >
+>    > 6）设置会话的超时时间，如果没有指定过期时间则两个星期后过期。
+>    >
+>    > ```
+>    > request.session.set_expiry(value)
+>    > ```
+>    >
+>    > - 如果value是一个整数，会话将在value秒没有活动后过期。
+>    > - 如果value为0，那么用户会话的Cookie将在用户的浏览器关闭时过期。
+>    > - 如果value为None，那么会话永不过期。
+
+## 8、用户认证auth模块
+
+### 8.1	介绍
+
+> - 基本上在任何网站上，都无可避免的需要设计实现网站的用户系统。此时我们需要实现包括用户注册、用户登录、用户认证、注销、修改密码等功能。使用Django，我们可以不需要自己写这些功能，因为Django内置了强大的用户认证系统--auth，它默认使用 auth_user 表来存储用户数据。
+>
+>   > ```python
+>   > // 1.使用auth认证系统from
+>   > from django.contrib import auth  
+>   > 
+>   > // 2.auth认证系统默认使用User表
+>   > from django.contrib.auth.models import User  
+>   > 
+>   > // 3.注意：命令行创建超级用户 python manage.py createsuperuser
+>   > ```
+
+### 8.2	authenticate() 
+
+> - 提供了用户认证功能，即验证用户名以及密码是否正确，一般需要username 、password两个关键字参数。
+>   
+> - 如果认证成功（用户名和密码正确有效），便会返回一个 User 对象。
+>   
+> - authenticate()会在该 User 对象上设置一个属性(id)来标识后端已经认证了该用户，且该信息在后续的登录过程中是需要的。
+>   
+>   > ```python
+>   > // 1.用法：
+>   > from django.contrib import auth
+>   > user_obj = auth.authenticate(username=username,password=pwd)
+>   > ```
+>
+
+### 8.3	login(request, user)
+
+> - 该函数接受一个HttpRequest对象，以及一个经过认证的User对象。
+>   
+> - 该函数实现一个用户登录的功能。它本质上会在后端为该用户生成相关session数据。
+>   
+>   >  ```python
+>   > // 1.用法：auth.login(request, user_obj)
+>   > // 2.示例：
+>   > from django.shortcuts import render, HttpResponse, redirect
+>   > from django.contrib import auth
+>   > 
+>   > def login(request):
+>   >         if request.method == "POST":
+>   >             username = request.POST.get('username')
+>   >             pwd = request.POST.get('password')
+>   >             # 调用auth模块的认证方法，判断用户名和密码是否正确，正确返回一个user_obj
+>   >             user_obj = auth.authenticate(username=username, password=pwd)
+>   >             if user_obj:
+>   >                 # 登录成功,设置Session数据
+>   >                 auth.login(request, user_obj)
+>   >                 return HttpResponse('登录成功')
+>   >             else:
+>   >                 return render(request, 'login.html', {'error_msg': '用户名或者密码错误'})
+>   >         return render(request, 'login.html')
+>   > 
+>   > // 3.注意：
+>   > 		#只要使用login(request, user_obj)之后，request.user就能拿到当前登录的用户对象。否则request.user得到的是一个匿名用户对象（AnonymousUser Object）。详细原理请查看 AuthenticationMiddleware 中间件源码。
+>   >  ```
+
+### 8.4	logout(request)
+
+> - 该函数接受一个HttpRequest对象，无返回值。当调用该函数时，当前请求的session信息会全部清除。该用户即使没有登录，使用该函数也不会报错。
+>
+>   > ```python
+>   > / 1.用法：
+>   > 
+>   > from django.contrib import auth
+>   > from django.shortcuts import redirect
+>   > 
+>   > def logout(request):
+>   >     auth.logout(request)
+>   >     return redirect('/login/')
+>   > ```
+
+### 8.5	login_requierd()
+
+> - auth 给我们提供的一个装饰器工具，用来快捷的给某个视图添加登录校验。
+>
+>   > ```python
+>   > // 1.用法：
+>   > from django.contrib.auth.decorators import login_required
+>   > 
+>   > @login_required
+>   > def index(request):
+>   >  		return render(request, 'index.html')
+>   > ```
+>
+> - 若用户没有登录，则会跳转到django默认的登录URL '/accounts/login/ ' 并传递当前访问url的绝对路径 (登陆成功后，会重定向到该路径)。如果需要自定义登录的URL，则需要在settings.py文件中通过LOGIN_URL进行修改。
+>
+>   > ```python
+>   > // 1.示例：
+>   > LOGIN_URL = '/login/'  # 这里配置成你项目登录页面的路由
+>   > ```
+
+### 8.6	create_user()
+
+> - 
+>   auth 提供的一个创建新用户的方法，需要提供必要参数（username、password）等。
+>   
+>   > ```python
+>   > // 1.用法：
+>   > from django.contrib.auth.models import User
+>   > user = User.objects.create_user（username='用户名',password='密码',email='邮箱',...）
+>   > 
+>   > // 2.示例：
+>   > def reg(request):
+>   >     if request.method == 'POST':
+>   >         username = request.POST.get('username')
+>   >         pwd = request.POST.get('password')
+>   >         # 假设数据都经过有效性校验了去数据库创建一条记录
+>   > 				User.objects.create_user(username=username, password=pwd)  
+>   > 				# create_user创建普通用户
+>   >    		  return redirect('/login/')
+>   >     return render(request, 'reg.html')
+>   >    ```
+> 
+
+### 8.7	create_superuser()
+
+> - auth 提供的一个创建新的超级用户的方法，需要提供必要参数（username、password）等。
+> 
+>   > ```python
+>   > // 1.用法：
+>   > from django.contrib.auth.models import User
+>   > user_obj = User.objects.create_superuser（username='用户名',password='密码',email='邮箱',...）
+>   > ```
+
+### 8.8	check_password(raw_password)
+
+> - auth 提供的一个检查密码是否正确的方法，需要提供当前请求用户的密码。
+>   密码正确返回True，否则返回False。
+>   
+>   > ```python
+>   > // 1.用法：
+>   > ok = user_obj.check_password('密码')
+>   > # 或者直接针对当前请求的user对象校验原密码是否正确：
+>   > ok = request.user.check_password(raw_password='原密码')
+>   > ```
+
+### 8.9	set_password(raw_password)
+
+> - auth 提供的一个修改密码的方法，接收要设置的新密码 作为参数。
+>
+> - 注意：设置完一定要调用用户对象的save方法！！！
+>
+>   > ```python
+>   > // 1.用法：
+>   > user_obj.set_password('新密码')
+>   > user_obj.save()
+>   > ```
+
+### 8.10	is_authenticated()
+
+> - 用来判断当前请求是否通过了认证。
+>   
+>   > ```python
+>   > // 1.用法：
+>   > 
+>   > def my_view(request):
+>   >   if not request.user.is_authenticated():
+>   >     return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+>   > ```
+
+### 8.11	用户对象的属性
+
+> - 从user_obj = request.user可以拿到当前登录的用户对象，用户对象user_obj能够拿到认证所用用户表的数据属性，比如username， password等。
+>   
+> - 其他常用属性含义如下：
+>   is_staff ： 用户是否拥有网站的管理权限.
+>   
+>   is_active ： 是否允许用户登录, 设置为 False，可以在不删除用户的前提下禁止用户登录。
+
+### 8.12	如何拓展auth默认的表
+
+> - 1、介绍
+>   
+>   > 1）虽然内置的认证系统很 好用，但是auth_user表字段都是固定的那几个，如果我想要加一个存储用户手机号的字段怎么办？
+>   >
+>   > > - 方法一：新建另外一张表然后通过一对一和内置的auth_user表关联
+>   > > - 方法二：通过继承内置的AbstractUser类，来定义一个自己的Model类。
+>   > > - 这样既能根据项目需求灵活的设计用户表，又能使用Django强大的认证系统了。 
+>   
+> - 2、示例：
+>   
+>   > ```python
+>   > // # models.py
+>   > from django.db import models
+>   > from django.contrib.auth.models import AbstractUser
+>   > 
+>   > class UserInfo(AbstractUser):这里定拓展的字段
+>   >       gender = models.PositiveIntegerField(choices=((0, '女'),(1, '男'), (2, '保密')))
+>   >       phone = models.CharField(max_length=11)
+>   > ```
+>
+> - 3、注意：
+>
+>   > 1）按上面的方式扩展了内置的 auth_user表之后，一定要在settings.py中告诉Django，我现在使用我新定义的UserInfo表来做用户认证。写法如下：
+>   >
+>   > - 引用Django自带的User表，继承使用时需要设置
+>   >
+>   > - AUTH_USER_MODEL = "app名.UserInfo"
+>
+> - 4、自定义认证系统默认使用的数据表之后，我们就可以像使用默认的auth_user表那样使用我们的UserInfo表了。比如：
+>
+>   > ```python
+>   > // 1.创建普通用户：
+>   > UserInfo.objects.create_user(username='用户名', password='密码')
+>   > 
+>   > // 2.创建超级用户：
+>   > UserInfo.objects.create_superuser(username='用户名', password='密码')
+>   > ```
+>
+> - 5、再次注意：
+>
+>   > 1）一旦我们指定了新的认证系统所使用的表，我们就需要重新在数据库中创建该表，而不能继续使用原来默认的auth_user表了。
+>   > 2）默认的auth_user表就会被你自定义的表替代，即auth_user表不存在了，我们使用auth模块的方法，修改的就是新的表。
+>   > 3）继承AbstractUser是在User表的基础上拓展字段，User表原来的字段还是有的，但是如果我就不想要User表的某些字段，而且还要拓展我需要的字段呢？怎么办？就需要继承AbstractBaseUser, PermissionsMixin重写一个表，表内的字段完全是你设计的字段
+>
+> - 6、代码变现
+>
+>   > ```python
+>   > from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+>   > 
+>   > # 定义UserProfile这个类的管理类
+>   > class UserManager(BaseUserManager):
+>   >     use_in_migrations = True
+>   > 
+>   >     def _create_user(self, email, password, **extra_fields):
+>   >         """
+>   >         Creates and saves a User with the given email and password.
+>   >         """
+>   >         if not email:
+>   >             raise ValueError('The given email must be set')
+>   >         email = self.normalize_email(email)
+>   >         user = self.model(email=email, **extra_fields)  # 创建对象
+>   >         user.set_password(password)  # 把密码加密之后再写入数据库
+>   >         user.save(using=self._db)  # 保存到数据库
+>   >         return user
+>   > 
+>   >     def create_user(self, email, password=None, **extra_fields):
+>   >         extra_fields.setdefault('is_staff', False)  # 给字典设置默认值
+>   >         extra_fields.setdefault('is_superuser', False)
+>   >         return self._create_user(email, password, **extra_fields)
+>   > 
+>   >     def create_superuser(self, email, password, **extra_fields):
+>   >         extra_fields.setdefault('is_staff', True)
+>   >         extra_fields.setdefault('is_superuser', True)
+>   > 
+>   >         if extra_fields.get('is_staff') is not True:
+>   >             raise ValueError('Superuser must have is_staff=True.')
+>   >         if extra_fields.get('is_superuser') is not True:
+>   >             raise ValueError('Superuser must have is_superuser=True.')
+>   >         return self._create_user(email, password, **extra_fields)
+>   > 
+>   > class UserProfile(AbstractBaseUser, PermissionsMixin):
+>   >     email = models.EmailField(
+>   >         max_length=255,
+>   >         unique=True,
+>   >         validators=[RegexValidator(r'^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$', '邮箱格式不正确'),]
+>   >     )
+>   >     is_staff = models.BooleanField(
+>   >         _('staff status'),
+>   >         default=False,
+>   >         help_text=_('Designates whether the user can log into this admin site.'),
+>   >     )
+>   >     is_active = models.BooleanField(
+>   >         _('active'),
+>   >         default=True,
+>   >         help_text=_(
+>   >             'Designates whether this user should be treated as active. '
+>   >             'Unselect this instead of deleting accounts.'
+>   >         ),
+>   >     )
+>   >     name = models.CharField('名字', max_length=32)
+>   >     department = models.ForeignKey('Department', default=None, blank=True, null=True)
+>   >     mobile = models.CharField(
+>   >         '手机',
+>   >         max_length=32,
+>   >         default=None,
+>   >         blank=True,
+>   >         null=True,
+>   >         validators=[RegexValidator(r'^1[3-9]\d{9}$', '手机格式不正确')]
+>   >     )
+>   > 
+>   >     memo = models.TextField('备注', blank=True, null=True, default=None)
+>   >     date_joined = models.DateTimeField(auto_now_add=True)
+>   > 
+>   >     EMAIL_FIELD = 'email'  # 发送邮件的字段
+>   >     USERNAME_FIELD = 'email'  # 用来唯一确定auth中的用户
+>   >     REQUIRED_FIELDS = ['name']  # auth指定除了上面两个配置项的字段还有哪些字段需要必填
+>   > 
+>   >     class Meta:
+>   >         verbose_name = '账户信息'
+>   >         verbose_name_plural = "账户信息"
+>   > 
+>   >     def clean(self):
+>   >         super(UserProfile, self).clean()
+>   >         # 对邮件进行校验
+>   >         self.email = self.__class__.objects.normalize_email(self.email)
+>   > 
+>   >     def get_full_name(self):
+>   >         # The user is identified by their email address
+>   >         return self.name
+>   > 
+>   >     def get_short_name(self):
+>   >         # The user is identified by their email address
+>   >         return self.email
+>   > 
+>   >     def __str__(self):  # __unicode__ on Python 2
+>   >         return self.name
+>   > 
+>   >     # 给ORM添加管理类
+>   >     objects = UserManager()
+>   > ```
+
+### 8.13	修改密码示例
+
+> ```python
+> @login_required
+> def set_password(request):
+>     user = request.user
+>     err_msg = ''
+>     if request.method == 'POST':
+>         old_password = request.POST.get('old_password')
+>         new_password = request.POST.get('new_password')
+>         re_password = request.POST.get('re_password')
+>         # 检查旧密码是否正确
+>         if user.check_password(old_password):
+>             if not new_password:
+>                 err_msg = '新密码不能为空'
+>             elif new_password != re_password:
+>                 err_msg = '两次密码不一致'
+>             else:
+>                 user.set_password(new_password)
+>                 user.save()
+>                 return redirect("/login/")
+>         else:
+>             err_msg = '原密码输入错误'
+>     return render(request, 'set_password.html', {'err_msg': err_msg})
+> ```
+
+
+
