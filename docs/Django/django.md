@@ -743,7 +743,7 @@
 >       return redirect('/')
 >   ```
 
-## 7.	Cookie和Session
+## 7、Cookie和Session
 
 ### 7.1	Cookie
 
