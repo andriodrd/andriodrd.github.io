@@ -787,7 +787,7 @@
 >    > 1）存储在数据库中，如下设置可以写，也可以不写，这是默认存储方式。
 >    >
 >    > ```python
->    > SESSION_ENGINE='django.contrib.sessions.backends.db'
+>    >   SESSION_ENGINE='django.contrib.sessions.backends.db'
 >    > ```
 >    >
 >    > 2）存储在缓存中：存储在本机内存中，如果丢失则不能找回，比数据库的方式读写更快。

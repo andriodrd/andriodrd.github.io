@@ -12,8 +12,11 @@
 - **Mysql**
 - **Shell**
 - **Docker**
+- **Python**
+  - [Python工作笔记](Python/python.md)
 - **Web Ui 自动化**
 - **App Ui 自动化**
 - **接口自动化**
+  - [接口api文档](/Interface/apifile.md)
 - **AotoTestPlatform**
 - **面试** 
