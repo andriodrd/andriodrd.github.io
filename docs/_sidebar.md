@@ -18,5 +18,7 @@
 - **App Ui 自动化**
 - **接口自动化**
   - [接口api文档](/Interface/apifile.md)
+  - [标准文档示例](/Interface/apidemo.md)
+  - [SMS系统api接口1.1](/Interface/sms.md)
 - **AotoTestPlatform**
 - **面试** 
