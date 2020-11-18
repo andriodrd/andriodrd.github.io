@@ -20,5 +20,6 @@
   - [接口api文档](/Interface/apifile.md)
   - [标准文档示例](/Interface/apidemo.md)
   - [SMS系统api接口1.1](/Interface/sms.md)
+  - [RPC接口测试](/Rpc/rpc.md)
 - **AotoTestPlatform**
 - **面试** 

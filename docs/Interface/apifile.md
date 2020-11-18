@@ -10,11 +10,15 @@
 
 #### 1.1.2	swagger-api启动
 
-> 1. git clone https://github.com/swagger-api/swagger-ui.git
-> 2. 运行http-server命令
-> 3. 进入http://127.0.0.1:8080/dist/index.html就可以看到swagger页面了
+> 1. 安装node-js
+> 2. 安装http-server：npm install -g http-server
+> 3. git clone https://github.com/swagger-api/swagger-ui.git
+> 4. 运行http-server命令
+> 5. 进入http://127.0.0.1:8080/dist/index.html就可以看到swagger页面了
 
-## 2、api示例：用户
+## 2、api示例：
+
+### 2.1、用户
 
 > 1. 功能描述
 >
@@ -81,3 +85,11 @@
 >    > | `ret` | int      | 0 表示成功,不为 0 表示失败 |
 >    > | `id`  | int      | 添加客户的id号             |
 >    > | `msg` | string   | 描述添加失败的原因         |
+
+### 2.2、通过用户的证件号码获取用户信息
+
+> ![image-20201110121130772](assets/image-20201110121130772.png)
+
+## 3、常见错误状态码
+
+> ![image-20201110121220811](assets/image-20201110121220811.png)
