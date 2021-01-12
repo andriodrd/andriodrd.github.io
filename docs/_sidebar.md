@@ -21,5 +21,10 @@
   - [标准文档示例](/Interface/apidemo.md)
   - [SMS系统api接口1.1](/Interface/sms.md)
   - [RPC接口测试](/Rpc/rpc.md)
+- **性能测试**
+  - [Loadrunner](/Loadrunner/lr.md)
+  - [性能测试方案](/Loadrunner/智慧民政登录场景_性能测试方案.md)
 - **AotoTestPlatform**
+- 杂记
+  - [Docsify快速搭建个人知识体系](/Docsify/Docsify快速搭建个人知识体系.md)
 - **面试** 
