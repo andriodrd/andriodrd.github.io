@@ -10,6 +10,8 @@
   - [常见功能测试点](Test/testcase.md)
 - **Linux**
 - **Mysql**
+  - [Mysql调优](Mysql/mysql.md)
+  - [Mysql主从复制](Mysql/mysql主从复制.md)
 - **Shell**
 - **Docker**
 - **Python**
@@ -28,4 +30,5 @@
 - 杂记
   - [Docsify快速搭建个人知识体系](/Docsify/Docsify快速搭建个人知识体系.md)
   - [Arthas追踪工具](/Arthas/arthas.md)
+  - [Nginx杂记](Nginx/nginx杂记.md)
 - **面试** 
