@@ -31,4 +31,5 @@
   - [Docsify快速搭建个人知识体系](/Docsify/Docsify快速搭建个人知识体系.md)
   - [Arthas追踪工具](/Arthas/arthas.md)
   - [Nginx杂记](Nginx/nginx杂记.md)
+  - [Nginx基础](Nginx/nginx基础.md)
 - **面试** 
