@@ -13,10 +13,14 @@
   - [Mysql调优](Mysql/mysql.md)
   - [Mysql主从复制](Mysql/mysql主从复制.md)
 - **Shell**
+  - [shell编程](Shell/shell编程.md)
 - **Docker**
+  - [Docker教程](Docker/Docker教程.md)
 - **Python**
   - [Python工作笔记](Python/python.md)
   - [Python高阶编程](Python/python高阶编程.md)
+- **Vue**
+  - [Vue](Vue/Vue.md)
 - **Web Ui 自动化**
 - **App Ui 自动化**
 - **接口自动化**
